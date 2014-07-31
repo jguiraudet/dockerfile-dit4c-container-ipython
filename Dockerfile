@@ -6,10 +6,12 @@ MAINTAINER t.dettrick@uq.edu.au
 # - build dependencies for Python PIP
 # - PIP to install iPython Notebook dependencies
 # - scipy dependencies
+# - matplotlib dependencies
 RUN yum install -y \
   gcc python-devel \
   python-pip \
-  blas-devel lapack-devel
+  blas-devel lapack-devel \
+  libpng-devel freetype-devel
 
 # Install from PIP
 # - Notebook dependencies
@@ -21,7 +23,7 @@ RUN pip install --upgrade setuptools && \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
-    ipythonblocks numpy pandas scipy
+    ipythonblocks matplotlib numpy pandas scipy
 
 # Create iPython profile, then
 # install MathJAX locally because CDN is HTTP-only
