@@ -8,12 +8,16 @@ MAINTAINER t.dettrick@uq.edu.au
 # - matplotlib dependencies
 # - scipy dependencies
 # - pytables dependencies
+# - netcdf4 dependencies
+# - nltk dependencies
 RUN yum install -y \
   gcc python-devel \
   python-virtualenv \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
-  hdf5-devel
+  hdf5-devel \
+  netcdf-devel \
+  libyaml-devel
 
 # Install system-indepedent python environment
 RUN virtualenv /opt/python && \
