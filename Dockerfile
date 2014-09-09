@@ -21,7 +21,7 @@ RUN yum install -y \
 
 # Install system-indepedent python environment
 RUN virtualenv /opt/python && \
-  echo "export PATH=/opt/python/bin:$PATH" >> /home/researcher/.bashrc
+  echo "export PATH=/opt/python/bin:$PATH" > /etc/profile.d/opt_python.sh
 
 # Install from PIP
 # - Notebook dependencies
