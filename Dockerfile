@@ -41,7 +41,7 @@ RUN /opt/python/bin/pip install --upgrade setuptools && \
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
-  /opt/python/bin/pip install tables
+  /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop
 
 # Create iPython profile, then
 # install MathJAX locally because CDN is HTTP-only
