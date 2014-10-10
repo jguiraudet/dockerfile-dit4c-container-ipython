@@ -20,26 +20,27 @@ RUN yum install -y \
   libyaml-devel
 
 # Install system-indepedent python environment
-RUN virtualenv /opt/python && \
-  echo "export PATH=/opt/python/bin:$PATH" > /etc/profile.d/opt_python.sh
+RUN virtualenv /opt/python
 
 # Install from PIP
 # - Notebook dependencies
 # - iPython (with notebook)
 # - Readline for usability
 # - Useful iPython libraries
-# - NLTK libraries
 RUN /opt/python/bin/pip install --upgrade setuptools && \
   /opt/python/bin/pip install \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
-    ipythonblocks numpy pandas scipy matplotlib \
-    nltk pyyaml tkinter
+    ipythonblocks numpy pandas scipy matplotlib
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
   /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop
+
+# Install NLTK
+RUN yum install -y tkinter && \
+  /opt/python/bin/pip install nltk pyyaml
 
 # Create iPython profile, then
 # install MathJAX locally because CDN is HTTP-only
