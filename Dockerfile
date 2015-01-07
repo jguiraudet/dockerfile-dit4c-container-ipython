@@ -27,7 +27,7 @@ RUN virtualenv /opt/python
 # - iPython (with notebook)
 # - Readline for usability
 # - Useful iPython libraries
-RUN /opt/python/bin/pip install --upgrade setuptools && \
+RUN /opt/python/bin/pip install --upgrade setuptools==9.1 && \
   /opt/python/bin/pip install \
     tornado pyzmq jinja2 \
     ipython \
