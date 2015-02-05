@@ -32,7 +32,7 @@ RUN /opt/python/bin/pip install --upgrade setuptools==9.1 && \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
-    ipythonblocks numpy pandas scipy matplotlib
+    ipythonblocks numpy pandas scipy matplotlib netCDF4 gitpython
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
