@@ -24,15 +24,17 @@ RUN virtualenv /opt/python
 
 # Install from PIP
 # - Notebook dependencies
-# - iPython (with notebook)
+# - IPython (with notebook)
 # - Readline for usability
-# - Useful iPython libraries
+# - Useful IPython libraries
+# - Missing IPython dependency
 RUN /opt/python/bin/pip install --upgrade setuptools==9.1 && \
   /opt/python/bin/pip install \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
-    ipythonblocks numpy pandas scipy matplotlib netCDF4 gitpython
+    ipythonblocks numpy pandas scipy matplotlib netCDF4 gitpython \
+    jsonschema
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
@@ -42,7 +44,7 @@ RUN /opt/python/bin/pip install numexpr cython && \
 RUN yum install -y tkinter && \
   /opt/python/bin/pip install nltk pyyaml
 
-# Create iPython profile, then
+# Create IPython profile, then
 # install MathJAX locally because CDN is HTTP-only
 RUN mkdir -p /opt/ipython && \
   IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
