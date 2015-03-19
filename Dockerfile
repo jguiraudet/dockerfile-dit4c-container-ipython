@@ -17,10 +17,14 @@ RUN yum install -y \
   libpng-devel freetype-devel \
   hdf5-devel \
   netcdf-devel \
-  libyaml-devel
+  libyaml-devel tkinter
 
 # Install system-indepedent python environment
-RUN virtualenv /opt/python
+RUN virtualenv /opt/python && \
+  mkdir -p /opt/ipython && \
+  chown -R researcher /opt/python /opt/ipython
+
+USER researcher
 
 # Install from PIP
 # - Notebook dependencies
@@ -28,8 +32,9 @@ RUN virtualenv /opt/python
 # - Readline for usability
 # - Useful IPython libraries
 # - Missing IPython dependency
-RUN /opt/python/bin/pip install --upgrade setuptools==9.1 && \
-  /opt/python/bin/pip install \
+RUN source /opt/python/bin/activate && \
+  pip install --upgrade setuptools==9.1 && \
+  pip install \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
@@ -41,15 +46,15 @@ RUN /opt/python/bin/pip install numexpr cython && \
   /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop
 
 # Install NLTK
-RUN yum install -y tkinter && \
-  /opt/python/bin/pip install nltk pyyaml
+RUN /opt/python/bin/pip install nltk pyyaml
 
 # Create IPython profile, then
 # install MathJAX locally because CDN is HTTP-only
-RUN mkdir -p /opt/ipython && \
-  IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
+RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
   /opt/python/bin/python -c "from IPython.external.mathjax import install_mathjax; install_mathjax()" && \
-  chown -R researcher /opt/python /opt/ipython
+  rm -rf /home/researcher/.ipython
+
+USER root
 
 # Add supporting files (directory at a time to improve build speed)
 COPY etc /etc
