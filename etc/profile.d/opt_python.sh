@@ -5,4 +5,5 @@ _user="$(id -u -n)"
 if [ "$_user" == "researcher" ]; then
   export PATH=/opt/python/bin:$PATH
   export IPYTHONDIR=/opt/ipython
+  export DISPLAY=:99
 fi

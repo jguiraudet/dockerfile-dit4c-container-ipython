@@ -10,6 +10,8 @@ MAINTAINER t.dettrick@uq.edu.au
 # - pytables dependencies
 # - netcdf4 dependencies
 # - nltk dependencies
+# - Xvfb for Python modules requiring X11
+# - GhostScript & ImageMagick for image manipulation
 RUN yum install -y \
   gcc python-devel \
   python-virtualenv \
@@ -17,7 +19,9 @@ RUN yum install -y \
   libpng-devel freetype-devel \
   hdf5-devel \
   netcdf-devel \
-  libyaml-devel tkinter
+  libyaml-devel tkinter \
+  xorg-x11-server-Xvfb \
+  ghostscript ImageMagick
 
 # Install system-indepedent python environment
 RUN virtualenv /opt/python && \
@@ -45,8 +49,9 @@ RUN source /opt/python/bin/activate && \
 RUN /opt/python/bin/pip install numexpr cython && \
   /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop
 
-# Install NLTK
-RUN /opt/python/bin/pip install nltk pyyaml
+# Install NLTK & pyStatParser
+RUN /opt/python/bin/pip install nltk pyyaml && \
+  /opt/python/bin/pip install git+https://github.com/emilmont/pyStatParser.git@master#egg=pyStatParser
 
 # Create IPython profile, then
 # install MathJAX locally because CDN is HTTP-only
