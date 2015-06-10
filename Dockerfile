@@ -2,8 +2,6 @@
 FROM quay.io/dit4c/dit4c-container-base:fakeroot
 MAINTAINER t.dettrick@uq.edu.au
 
-USER researcher
-
 # Install
 # - build dependencies for Python PIP
 # - virtualenv to setup python environment
@@ -62,6 +60,11 @@ RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
 COPY etc /etc
 COPY opt /opt
 COPY var /var
+
+# Because COPY doesn't respoect USER...
+USER root
+RUN chown -R researcher:researcher /etc /opt /var
+USER researcher
 
 # Check nginx config is OK
 RUN nginx -t
