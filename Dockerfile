@@ -1,5 +1,5 @@
 # DOCKER-VERSION 1.0
-FROM dit4c/dit4c-container-base
+FROM quay.io/dit4c/dit4c-container-base:fakeroot
 MAINTAINER t.dettrick@uq.edu.au
 
 # Install
@@ -12,7 +12,7 @@ MAINTAINER t.dettrick@uq.edu.au
 # - nltk dependencies
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
-RUN yum install -y \
+RUN rpm --rebuilddb && fsudo yum install -y \
   gcc python-devel \
   python-virtualenv \
   blas-devel lapack-devel \
@@ -25,10 +25,7 @@ RUN yum install -y \
 
 # Install system-indepedent python environment
 RUN virtualenv /opt/python && \
-  mkdir -p /opt/ipython && \
-  chown -R researcher /opt/python /opt/ipython
-
-USER researcher
+  mkdir -p /opt/ipython
 
 # Install from PIP
 # - Notebook dependencies
@@ -43,7 +40,7 @@ RUN source /opt/python/bin/activate && \
     ipython \
     pyreadline \
     ipythonblocks numpy pandas scipy matplotlib netCDF4 gitpython \
-    jsonschema
+    jsonschema functools32
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
@@ -59,14 +56,10 @@ RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
   /opt/python/bin/python -c "from IPython.external.mathjax import install_mathjax; install_mathjax()" && \
   rm -rf /home/researcher/.ipython
 
-USER root
-
 # Add supporting files (directory at a time to improve build speed)
 COPY etc /etc
 COPY opt /opt
 COPY var /var
-# Chowned to root, so reverse that change
-RUN chown -R researcher /opt/{,i}python /var/log/{easydav,supervisor}
 
 # Check nginx config is OK
 RUN nginx -t
