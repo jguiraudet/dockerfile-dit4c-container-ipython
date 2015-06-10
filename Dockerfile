@@ -2,6 +2,8 @@
 FROM quay.io/dit4c/dit4c-container-base:fakeroot
 MAINTAINER t.dettrick@uq.edu.au
 
+USER researcher
+
 # Install
 # - build dependencies for Python PIP
 # - virtualenv to setup python environment
