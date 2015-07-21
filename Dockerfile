@@ -28,27 +28,33 @@ RUN virtualenv /opt/python && \
   mkdir -p /opt/ipython
 
 # Install from PIP
+# - Updates for setuptools, pip & wheels
 # - Notebook dependencies
 # - IPython (with notebook)
 # - Readline for usability
+# - Missing IPython dependencies
 # - Useful IPython libraries
-# - Missing IPython dependency
+# - SciPy & netCDF4 (which expect numpy to be installed first)
 RUN source /opt/python/bin/activate && \
-  pip install --upgrade setuptools==9.1 && \
+  pip install --upgrade setuptools pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
     ipython \
     pyreadline \
-    ipythonblocks numpy pandas scipy matplotlib netCDF4 gitpython \
-    jsonschema functools32
+    jsonschema functools32 \
+    ipythonblocks numpy pandas matplotlib gitpython && \
+  pip install scipy netCDF4 && \
+  rm -rf /home/researcher/.cache
 
 # Install pytables
 RUN /opt/python/bin/pip install numexpr cython && \
-  /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop
+  /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop && \
+  rm -rf /home/researcher/.cache
 
 # Install NLTK & pyStatParser
 RUN /opt/python/bin/pip install nltk pyyaml && \
-  /opt/python/bin/pip install git+https://github.com/emilmont/pyStatParser.git@master#egg=pyStatParser
+  /opt/python/bin/pip install git+https://github.com/emilmont/pyStatParser.git@master#egg=pyStatParser && \
+  rm -rf /home/researcher/.cache
 
 # Create IPython profile, then
 # install MathJAX locally because CDN is HTTP-only
