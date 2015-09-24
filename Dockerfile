@@ -51,8 +51,8 @@ RUN /opt/python/bin/pip install numexpr cython && \
   /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop && \
   rm -rf /home/researcher/.cache
 
-# Install NLTK & pyStatParser
-RUN /opt/python/bin/pip install nltk pyyaml && \
+# Install NLTK, textblob & pyStatParser
+RUN /opt/python/bin/pip install nltk textblob pyyaml && \
   /opt/python/bin/pip install git+https://github.com/emilmont/pyStatParser.git@master#egg=pyStatParser && \
   rm -rf /home/researcher/.cache
 
