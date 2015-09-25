@@ -40,7 +40,7 @@ RUN source /opt/python/bin/activate && \
   pip install --upgrade pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
-    ipython \
+    ipython jupyter \
     jsonschema \
     ipythonblocks numpy pandas matplotlib gitpython && \
   pip install scipy netCDF4 && \
