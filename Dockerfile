@@ -39,7 +39,7 @@ RUN source /opt/python/bin/activate && \
   pip install --upgrade setuptools pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
-    ipython \
+    ipython jupyter \
     pyreadline \
     jsonschema functools32 \
     ipythonblocks numpy pandas matplotlib gitpython && \
