@@ -13,8 +13,7 @@ MAINTAINER t.dettrick@uq.edu.au
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
 RUN rpm --rebuilddb && fsudo yum install -y \
-  gcc python-devel \
-  python-virtualenv \
+  gcc python34-devel \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
   hdf5-devel \
@@ -24,7 +23,9 @@ RUN rpm --rebuilddb && fsudo yum install -y \
   ghostscript ImageMagick
 
 # Install system-indepedent python environment
-RUN virtualenv /opt/python && \
+RUN pyvenv-3.4 --without-pip /opt/python && \
+  cd /tmp && \
+  curl -L -s https://bootstrap.pypa.io/get-pip.py | /opt/python/bin/python && \
   mkdir -p /opt/ipython
 
 # Install from PIP
@@ -36,12 +37,11 @@ RUN virtualenv /opt/python && \
 # - Useful IPython libraries
 # - SciPy & netCDF4 (which expect numpy to be installed first)
 RUN source /opt/python/bin/activate && \
-  pip install --upgrade setuptools pip wheel && \
+  pip install --upgrade pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
     ipython \
-    pyreadline \
-    jsonschema functools32 \
+    jsonschema \
     ipythonblocks numpy pandas matplotlib gitpython && \
   pip install scipy netCDF4 && \
   rm -rf /home/researcher/.cache
@@ -67,7 +67,7 @@ COPY etc /etc
 COPY opt /opt
 COPY var /var
 
-# Because COPY doesn't respoect USER...
+# Because COPY doesn't respect USER...
 USER root
 RUN chown -R researcher:researcher /etc /opt /var
 USER researcher
