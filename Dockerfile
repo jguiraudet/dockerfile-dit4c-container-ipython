@@ -1,5 +1,5 @@
 # DOCKER-VERSION 1.0
-FROM dit4c/dit4c-container-base:latest
+FROM dit4c/dit4c-container-base:gotty
 MAINTAINER t.dettrick@uq.edu.au
 
 # Install
@@ -13,7 +13,7 @@ MAINTAINER t.dettrick@uq.edu.au
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
 RUN rpm --rebuilddb && fsudo yum install -y \
-  gcc python34-devel \
+  gcc gcc-c++ python34-devel \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
   hdf5-devel \
