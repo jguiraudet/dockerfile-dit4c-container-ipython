@@ -4,6 +4,7 @@ MAINTAINER t.dettrick@uq.edu.au
 
 # Install
 # - build dependencies for Python PIP
+# - ccache to make building faster
 # - virtualenv to setup python environment
 # - matplotlib dependencies
 # - scipy dependencies
@@ -15,6 +16,7 @@ MAINTAINER t.dettrick@uq.edu.au
 RUN rpm --rebuilddb && fsudo yum install -y \
   gcc python-devel \
   python-virtualenv \
+  ccache \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
   hdf5-devel \
@@ -27,7 +29,7 @@ RUN rpm --rebuilddb && fsudo yum install -y \
 RUN virtualenv /opt/python && \
   mkdir -p /opt/ipython
 
-# Install from PIP
+# Install from PIP, using ccache to speed build
 # - Updates for setuptools, pip & wheels
 # - Notebook dependencies
 # - IPython (with notebook)
@@ -36,6 +38,7 @@ RUN virtualenv /opt/python && \
 # - Useful IPython libraries
 # - SciPy & netCDF4 (which expect numpy to be installed first)
 RUN source /opt/python/bin/activate && \
+  PATH=/usr/lib64/ccache:$PATH && \
   pip install --upgrade setuptools pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
@@ -44,11 +47,10 @@ RUN source /opt/python/bin/activate && \
     jsonschema functools32 \
     ipythonblocks numpy pandas matplotlib gitpython && \
   pip install scipy netCDF4 && \
-  rm -rf /home/researcher/.cache
-
-# Install pytables
-RUN /opt/python/bin/pip install numexpr cython && \
-  /opt/python/bin/pip install git+git://github.com/pytables/pytables@develop && \
+  pip install numexpr cython && \
+  pip install git+git://github.com/pytables/pytables@develop && \
+  ccache --show-stats && \
+  ccache --clear && \
   rm -rf /home/researcher/.cache
 
 # Install NLTK, textblob & pyStatParser
