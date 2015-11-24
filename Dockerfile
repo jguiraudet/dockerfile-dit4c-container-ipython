@@ -1,5 +1,5 @@
 # DOCKER-VERSION 1.0
-FROM dit4c/dit4c-container-base:latest
+FROM dit4c/dit4c-container-base:withroot
 MAINTAINER t.dettrick@uq.edu.au
 
 # Install
@@ -12,7 +12,7 @@ MAINTAINER t.dettrick@uq.edu.au
 # - nltk dependencies
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
-RUN rpm --rebuilddb && fsudo yum install -y \
+RUN rpm --rebuilddb && yum install -y \
   gcc python34-devel \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
@@ -69,8 +69,7 @@ COPY var /var
 
 # Because COPY doesn't respect USER...
 USER root
-RUN chown -R researcher:researcher /etc /opt /var
-USER researcher
+RUN chown -R researcher:researcher /etc /opt /var /home/researcher
 
 # Check nginx config is OK
 RUN nginx -t
