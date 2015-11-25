@@ -13,7 +13,7 @@ MAINTAINER t.dettrick@uq.edu.au
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
 RUN rpm --rebuilddb && yum install -y \
-  tar gcc-c++ gcc python34-devel \
+  gcc gcc-c++ python34-devel \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
   hdf5-devel \
@@ -66,10 +66,6 @@ RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
 COPY etc /etc
 COPY opt /opt
 COPY var /var
-
-# Because COPY doesn't respect USER...
-USER root
-RUN chown -R researcher:researcher /etc /opt /var 
 
 # Check nginx config is OK
 RUN nginx -t
