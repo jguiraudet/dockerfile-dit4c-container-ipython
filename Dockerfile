@@ -67,9 +67,5 @@ COPY etc /etc
 COPY opt /opt
 COPY var /var
 
-# Because COPY doesn't respect USER...
-USER root
-RUN chown -R researcher:researcher /etc /opt /var /home/researcher
-
 # Check nginx config is OK
 RUN nginx -t
