@@ -22,11 +22,16 @@ RUN rpm --rebuilddb && yum install -y \
   xorg-x11-server-Xvfb \
   ghostscript ImageMagick
 
+RUN  mkdir /opt/ipython && mkdir /opt/python && \
+    chown researcher:researcher /opt/ipython && \
+    chown researcher:researcher /opt/python
+
+USER researcher
+
 # Install system-indepedent python environment
 RUN pyvenv-3.4 --without-pip /opt/python && \
   cd /tmp && \
-  curl -L -s https://bootstrap.pypa.io/get-pip.py | /opt/python/bin/python && \
-  mkdir -p /opt/ipython
+  curl -L -s https://bootstrap.pypa.io/get-pip.py | /opt/python/bin/python
 
 # Install from PIP
 # - Updates for setuptools, pip & wheels
@@ -62,10 +67,14 @@ RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
   /opt/python/bin/python -c "from IPython.external.mathjax import install_mathjax; install_mathjax()" && \
   rm -rf /home/researcher/.ipython
 
+USER root
+
 # Add supporting files (directory at a time to improve build speed)
 COPY etc /etc
 COPY opt /opt
 COPY var /var
+
+RUN chown -R researcher:researcher /opt/ipython
 
 # Check nginx config is OK
 RUN nginx -t
