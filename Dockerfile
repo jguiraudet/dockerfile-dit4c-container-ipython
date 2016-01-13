@@ -1,5 +1,5 @@
 # DOCKER-VERSION 1.0
-FROM dit4c/dit4c-container-base:latest
+FROM dit4c/dit4c-container-base:withroot-gotty
 MAINTAINER t.dettrick@uq.edu.au
 
 # Install
@@ -13,9 +13,8 @@ MAINTAINER t.dettrick@uq.edu.au
 # - nltk dependencies
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
-RUN rpm --rebuilddb && fsudo yum install -y \
-  gcc python-devel \
-  python-virtualenv \
+RUN rpm --rebuilddb && yum install -y \
+  gcc gcc-c++ python34-devel \
   ccache \
   blas-devel lapack-devel \
   libpng-devel freetype-devel \
@@ -25,9 +24,17 @@ RUN rpm --rebuilddb && fsudo yum install -y \
   xorg-x11-server-Xvfb \
   ghostscript ImageMagick
 
+RUN  mkdir /opt/ipython && mkdir /opt/python && \
+    chown researcher:researcher /opt/ipython && \
+    chown researcher:researcher /opt/python
+
+USER root
+USER researcher
+
 # Install system-indepedent python environment
-RUN virtualenv /opt/python && \
-  mkdir -p /opt/ipython
+RUN pyvenv-3.4 --without-pip /opt/python && \
+  cd /tmp && \
+  curl -L -s https://bootstrap.pypa.io/get-pip.py | /opt/python/bin/python
 
 # Install from PIP, using ccache to speed build
 # - Updates for setuptools, pip & wheels
@@ -39,12 +46,11 @@ RUN virtualenv /opt/python && \
 # - SciPy & netCDF4 (which expect numpy to be installed first)
 RUN source /opt/python/bin/activate && \
   PATH=/usr/lib64/ccache:$PATH && \
-  pip install --upgrade setuptools pip wheel && \
+  pip install --upgrade pip wheel && \
   pip install \
     tornado pyzmq jinja2 \
     ipython jupyter \
-    pyreadline \
-    jsonschema functools32 \
+    jsonschema \
     ipythonblocks numpy pandas matplotlib gitpython && \
   pip install scipy netCDF4 && \
   pip install numexpr cython && \
@@ -64,15 +70,14 @@ RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
   /opt/python/bin/python -c "from IPython.external.mathjax import install_mathjax; install_mathjax()" && \
   rm -rf /home/researcher/.ipython
 
+USER root
+
 # Add supporting files (directory at a time to improve build speed)
 COPY etc /etc
 COPY opt /opt
 COPY var /var
 
-# Because COPY doesn't respoect USER...
-USER root
-RUN chown -R researcher:researcher /etc /opt /var
-USER researcher
+RUN chown -R researcher:researcher /opt/ipython
 
 # Check nginx config is OK
 RUN nginx -t
