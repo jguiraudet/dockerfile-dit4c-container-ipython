@@ -24,11 +24,10 @@ RUN rpm --rebuilddb && yum install -y \
   xorg-x11-server-Xvfb \
   ghostscript ImageMagick
 
-RUN  mkdir /opt/ipython && mkdir /opt/python && \
+RUN mkdir /opt/ipython && mkdir /opt/python && \
     chown researcher:researcher /opt/ipython && \
     chown researcher:researcher /opt/python
 
-USER root
 USER researcher
 
 # Install system-indepedent python environment
@@ -64,10 +63,8 @@ RUN /opt/python/bin/pip install nltk textblob pyyaml && \
   /opt/python/bin/pip install git+https://github.com/emilmont/pyStatParser.git@master#egg=pyStatParser && \
   rm -rf /home/researcher/.cache
 
-# Create IPython profile, then
-# install MathJAX locally because CDN is HTTP-only
+# Create IPython profile
 RUN IPYTHONDIR=/opt/ipython /opt/python/bin/ipython profile create default && \
-  /opt/python/bin/python -c "from IPython.external.mathjax import install_mathjax; install_mathjax()" && \
   rm -rf /home/researcher/.ipython
 
 USER root
