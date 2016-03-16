@@ -53,7 +53,7 @@ RUN source /opt/python/bin/activate && \
     ipythonblocks numpy pandas matplotlib gitpython && \
   pip install scipy netCDF4 && \
   pip install numexpr cython && \
-  pip install git+git://github.com/pytables/pytables@develop && \
+  pip install tables && \
   ccache --show-stats && \
   ccache --clear && \
   rm -rf /home/researcher/.cache
