@@ -54,6 +54,7 @@ RUN source /opt/python/bin/activate && \
   pip install scipy netCDF4 && \
   pip install numexpr cython && \
   pip install tables && \
+  pip install seaborn && \
   ccache --show-stats && \
   ccache --clear && \
   rm -rf /home/researcher/.cache
