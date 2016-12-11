@@ -1,6 +1,6 @@
 # DOCKER-VERSION 1.0
-FROM dit4c/dit4c-container-base:latest
-MAINTAINER t.dettrick@uq.edu.au
+FROM jguiraudet/dit4c-container-base:debian-cuda8.0
+MAINTAINER jguiraudet@gmail.com
 
 # Install
 # - build dependencies for Python PIP
@@ -13,16 +13,16 @@ MAINTAINER t.dettrick@uq.edu.au
 # - nltk dependencies
 # - Xvfb for Python modules requiring X11
 # - GhostScript & ImageMagick for image manipulation
-RUN rpm --rebuilddb && yum install -y \
-  gcc gcc-c++ python34-devel \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  gcc  python3 \
   ccache \
-  blas-devel lapack-devel \
-  libpng-devel freetype-devel \
-  hdf5-devel \
-  netcdf-devel \
-  libyaml-devel tkinter \
-  xorg-x11-server-Xvfb \
-  ghostscript ImageMagick
+  libblas-dev liblapack-dev \
+  libpng-dev libfreetype6-dev \
+  libhdf5-dev \
+   \
+  libyaml-dev python-tk \
+  Xvfb \
+  ghostscript ImageMagick build-essential python3-dev
 
 RUN mkdir /opt/ipython && mkdir /opt/python && \
     chown researcher:researcher /opt/ipython && \
@@ -31,7 +31,7 @@ RUN mkdir /opt/ipython && mkdir /opt/python && \
 USER researcher
 
 # Install system-indepedent python environment
-RUN pyvenv-3.4 --without-pip /opt/python && \
+RUN python3 -m venv --without-pip /opt/python && \
   cd /tmp && \
   curl -L -s https://bootstrap.pypa.io/get-pip.py | /opt/python/bin/python
 
@@ -43,7 +43,7 @@ RUN pyvenv-3.4 --without-pip /opt/python && \
 # - Missing IPython dependencies
 # - Useful IPython libraries
 # - SciPy & netCDF4 (which expect numpy to be installed first)
-RUN source /opt/python/bin/activate && \
+RUN . /opt/python/bin/activate && \
   PATH=/usr/lib64/ccache:$PATH && \
   pip install --upgrade pip wheel && \
   pip install \
