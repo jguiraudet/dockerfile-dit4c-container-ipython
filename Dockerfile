@@ -1,5 +1,5 @@
 # DOCKER-VERSION 1.0
-FROM jguiraudet/dit4c-container-base:8.0-cudnn5-devel
+FROM jguiraudet/dit4c-container-ubuntu-base:ok
 MAINTAINER jguiraudet@gmail.com
 
 # Install
@@ -23,6 +23,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libyaml-dev python-tk \
   Xvfb \
   ghostscript ImageMagick build-essential python3-dev
+#### TODO missing
+#### gcc-c++ netcdf-dev
 
 RUN mkdir /opt/ipython && mkdir /opt/python && \
     chown researcher:researcher /opt/ipython && \
